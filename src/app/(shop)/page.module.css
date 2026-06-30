@@ -1,0 +1,122 @@
+.seccion { padding-block: var(--space-20); }
+
+.seccionHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-10);
+}
+
+.seccionTitulo {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.verTodos {
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-text-mid);
+  transition: color var(--duration-fast) var(--ease);
+}
+.verTodos:hover { color: var(--color-text); }
+
+/* ── Categorías ──────────────────────────────────── */
+.categoriasGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.catCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-decoration: none;
+}
+
+.catColor {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-sm);
+  transition: transform var(--duration-slow) var(--ease),
+              opacity var(--duration-mid) var(--ease);
+}
+/* Colores por categoría slug */
+.catColor[data-cat="mujer"]  { background: linear-gradient(135deg, #D4A5A5 0%, #8B5E6B 100%); }
+.catColor[data-cat="hombre"] { background: linear-gradient(135deg, #8BA5B5 0%, #3D5A6B 100%); }
+.catColor[data-cat="ninos"]  { background: linear-gradient(135deg, #B5D5A5 0%, #5A7B4A 100%); }
+/* Fallback para cualquier otra */
+.catColor { background: linear-gradient(135deg, var(--color-bg-alt) 0%, var(--color-border-dark) 100%); }
+
+.catCard:hover .catColor { transform: scale(1.02); opacity: 0.9; }
+
+.catNombre {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--color-text);
+  transition: color var(--duration-fast) var(--ease);
+}
+.catCard:hover .catNombre { color: var(--color-accent-dark); }
+
+.catSub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: calc(var(--space-1) * -1);
+}
+
+/* ── Productos grid ──────────────────────────────── */
+.productosGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6) var(--space-5);
+}
+
+/* ── Banner ──────────────────────────────────────── */
+.banner {
+  background: var(--color-bg-alt);
+  padding-block: var(--space-12);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bannerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-8);
+}
+
+.bannerItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.bannerIcono { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.bannerTitulo {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.bannerTexto {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 1024px) {
+  .productosGrid    { grid-template-columns: repeat(3, 1fr); }
+  .categoriasGrid   { grid-template-columns: repeat(2, 1fr); }
+  .bannerGrid       { grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
+}
+
+@media (max-width: 640px) {
+  .productosGrid    { grid-template-columns: repeat(2, 1fr); }
+  .bannerGrid       { grid-template-columns: 1fr; gap: var(--space-5); }
+}

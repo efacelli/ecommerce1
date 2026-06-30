@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "target": "ES2017",
+    "esModuleInterop": true,
+    "strict": false
+  }
+}

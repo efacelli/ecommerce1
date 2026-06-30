@@ -1,0 +1,201 @@
+.btnVolver {
+  font-size: 0.8125rem;
+  color: var(--a-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--a-space-5);
+  align-items: start;
+}
+
+.colPrincipal { display: flex; flex-direction: column; gap: var(--a-space-4); }
+.sidebar      { display: flex; flex-direction: column; gap: var(--a-space-4);
+                position: sticky; top: calc(var(--a-header-h) + var(--a-space-4)); }
+
+/* ── Card ────────────────────────────────────────── */
+.card {
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-md);
+  padding: var(--a-space-5);
+  box-shadow: var(--a-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-space-4);
+}
+
+.cardTitulo {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--a-text);
+  padding-bottom: var(--a-space-3);
+  border-bottom: 1px solid var(--a-border);
+}
+
+/* ── Tabla de ítems ──────────────────────────────── */
+.tabla { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+
+.th {
+  text-align: left;
+  padding: var(--a-space-2) var(--a-space-3);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--a-text-muted);
+  border-bottom: 1px solid var(--a-border);
+}
+
+.fila { border-bottom: 1px solid var(--a-border); }
+.fila:last-child { border-bottom: none; }
+
+.td { padding: var(--a-space-3); color: var(--a-text); vertical-align: middle; }
+.tdMuted { padding: var(--a-space-3); color: var(--a-text-muted); vertical-align: middle; font-size: 0.8125rem; }
+.tdMono { padding: var(--a-space-3); font-variant-numeric: tabular-nums; font-family: ui-monospace, monospace; font-size: 0.8125rem; vertical-align: middle; }
+.tdCentro { padding: var(--a-space-3); text-align: center; vertical-align: middle; font-weight: 500; }
+
+.productoCell { display: flex; align-items: center; gap: var(--a-space-3); }
+.productoImg {
+  position: relative;
+  width: 40px;
+  aspect-ratio: 3/4;
+  border-radius: var(--a-radius-sm);
+  overflow: hidden;
+  background: var(--a-surface-2);
+  flex-shrink: 0;
+}
+.img { object-fit: cover; }
+.productoNombre { font-weight: 500; font-size: 0.875rem; }
+
+/* ── Totales ─────────────────────────────────────── */
+.totales {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-space-2);
+  border-top: 1px solid var(--a-border);
+  padding-top: var(--a-space-4);
+  max-width: 260px;
+  margin-left: auto;
+}
+
+.totalFila {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--a-text-mid);
+}
+
+.totalFinal {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--a-text);
+  padding-top: var(--a-space-2);
+  border-top: 1px solid var(--a-border-dark);
+  margin-top: var(--a-space-1);
+}
+
+.descuento { color: var(--a-success); }
+
+/* ── Historial ───────────────────────────────────── */
+.historial {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: var(--a-space-5);
+}
+
+.historial::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--a-border);
+}
+
+.historialItem {
+  position: relative;
+  padding-bottom: var(--a-space-4);
+}
+.historialItem:last-child { padding-bottom: 0; }
+
+.historialPunto {
+  position: absolute;
+  left: calc(-1 * var(--a-space-5) + 1px);
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--a-primary);
+  border: 2px solid var(--a-surface);
+  box-shadow: 0 0 0 1px var(--a-primary);
+}
+
+.historialContenido { display: flex; flex-direction: column; gap: 4px; }
+
+.historialTop {
+  display: flex;
+  align-items: center;
+  gap: var(--a-space-2);
+  flex-wrap: wrap;
+}
+
+.historialFecha { font-size: 0.75rem; color: var(--a-text-muted); }
+.historialAdmin { font-size: 0.75rem; color: var(--a-text-muted); font-style: italic; }
+.historialNota  { font-size: 0.8125rem; color: var(--a-text-mid); line-height: 1.5; }
+
+/* ── Notas ───────────────────────────────────────── */
+.notas { display: flex; flex-direction: column; gap: var(--a-space-3); }
+
+.nota {
+  border-radius: var(--a-radius-sm);
+  padding: var(--a-space-3) var(--a-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-space-1);
+}
+
+.notaInterna { background: var(--a-warning-bg); border: 1px solid var(--a-warning); }
+.notaPublica { background: var(--a-info-bg); border: 1px solid var(--a-info); }
+
+.notaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notaTipo  { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--a-text-mid); }
+.notaFecha { font-size: 0.6875rem; color: var(--a-text-muted); }
+.notaTexto { font-size: 0.875rem; color: var(--a-text); line-height: 1.5; }
+
+.sinDatos { font-size: 0.875rem; color: var(--a-text-muted); }
+
+/* ── Sidebar cards ───────────────────────────────── */
+.estadoActual { display: flex; flex-direction: column; gap: var(--a-space-2); align-items: flex-start; }
+
+.datosList { display: flex; flex-direction: column; gap: var(--a-space-3); }
+
+.dato { display: flex; flex-direction: column; gap: 2px; }
+.datoLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--a-text-muted);
+}
+.dato span:last-child, .dato a { font-size: 0.875rem; color: var(--a-text); }
+.datoLink { color: var(--a-primary); text-decoration: underline; text-underline-offset: 2px; }
+.datoMuted { color: var(--a-text-muted) !important; }
+.mono { font-family: ui-monospace, monospace; font-size: 0.8125rem !important; }
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+}

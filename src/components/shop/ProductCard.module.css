@@ -1,0 +1,103 @@
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-surface);
+}
+
+/* ── Imagen ─────────────────────────────────────── */
+.imagenWrapper {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+}
+
+.imagen {
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease);
+}
+
+.card:hover .imagen {
+  transform: scale(1.04);
+}
+
+/* ── Badges ─────────────────────────────────────── */
+.badges {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  z-index: 2;
+}
+
+/* ── Overlay ─────────────────────────────────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 24, 0.28);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-4);
+  opacity: 0;
+  transition: opacity var(--duration-mid) var(--ease);
+}
+
+.card:hover .overlay { opacity: 1; }
+
+.overlayTexto {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* ── Info ────────────────────────────────────────── */
+.info {
+  padding: var(--space-3) 0 var(--space-5);
+}
+
+.categoria {
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+/* Signature: nombre grande en display serif, precio pequeño */
+.nombre {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.precios {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.precio {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.precioAnterior {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 640px) {
+  .nombre { font-size: var(--text-lg); }
+}

@@ -1,0 +1,126 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── Selectores ──────────────────────────────────── */
+.selector { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.selectorHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.selectorLabel {
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.selectorValor {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-mid);
+}
+
+.guiaTalles {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--duration-fast) var(--ease);
+}
+.guiaTalles:hover { color: var(--color-text); }
+
+/* Talles */
+.talles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.talleBtn {
+  min-width: 48px;
+  height: 48px;
+  padding-inline: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  transition: all var(--duration-fast) var(--ease);
+  position: relative;
+}
+
+.talleBtn:hover:not(.talleBtnAgotado) {
+  border-color: var(--color-text);
+}
+
+.talleBtnActivo {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.talleBtnAgotado {
+  opacity: 0.35;
+  cursor: not-allowed;
+  /* Línea diagonal indicando sin stock */
+  background-image: linear-gradient(
+    135deg,
+    transparent 43%,
+    var(--color-border-dark) 43%,
+    var(--color-border-dark) 57%,
+    transparent 57%
+  );
+}
+
+/* Colores */
+.colores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.colorBtn {
+  height: 36px;
+  padding-inline: var(--space-4);
+  font-size: var(--text-xs);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-mid);
+  transition: all var(--duration-fast) var(--ease);
+}
+.colorBtn:hover { border-color: var(--color-text); color: var(--color-text); }
+.colorBtnActivo { border-color: var(--color-text); color: var(--color-text); font-weight: 500; }
+
+/* Error */
+.error {
+  font-size: var(--text-sm);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-error);
+}
+
+/* WhatsApp */
+.whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-mid);
+  padding-block: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  transition: color var(--duration-fast) var(--ease);
+}
+.whatsapp:hover { color: #25D366; }

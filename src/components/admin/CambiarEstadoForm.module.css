@@ -1,0 +1,46 @@
+.form { display: flex; flex-direction: column; gap: var(--a-space-3); }
+
+.campo { display: flex; flex-direction: column; gap: var(--a-space-1); }
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--a-text-muted);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--a-space-2) var(--a-space-3);
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-sm);
+  font-size: 0.8125rem;
+  color: var(--a-text);
+  resize: vertical;
+  outline: none;
+  font-family: var(--a-font);
+  transition: border-color var(--a-dur);
+  line-height: 1.5;
+  background: var(--a-surface);
+}
+.textarea:focus { border-color: var(--a-primary); }
+
+.botones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-space-2);
+}
+
+.sinAcciones {
+  font-size: 0.8125rem;
+  color: var(--a-text-muted);
+  font-style: italic;
+}
+
+.ok {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--a-success);
+  text-align: center;
+}

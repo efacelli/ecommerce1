@@ -1,0 +1,92 @@
+.pagina {
+  min-height: 100vh;
+  background: var(--color-bg-alt);
+  padding-bottom: var(--space-20);
+}
+
+/* ── Header simplificado ─────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-10);
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+/* ── Breadcrumb de pasos ─────────────────────────── */
+.pasos {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.paso {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.pasoLink {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--duration-fast) var(--ease);
+}
+.pasoLink:hover { color: var(--color-text); }
+
+.pasoActivo {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.pasoPendiente { opacity: 0.4; }
+
+.pasoDivisor {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+/* ── Contenido ───────────────────────────────────── */
+.contenido { /* CheckoutForm maneja su propio layout */ }
+
+/* ── Skeleton loader ─────────────────────────────── */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 720px;
+}
+
+.skeletonBloque {
+  height: 180px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  animation: pulso 1.5s ease-in-out infinite;
+}
+
+.skeletonBloque:nth-child(2) { height: 240px; animation-delay: 0.1s; }
+.skeletonBloque:nth-child(3) { height: 200px; animation-delay: 0.2s; }
+.skeletonBloque:nth-child(4) { height: 120px; animation-delay: 0.3s; }
+
+@keyframes pulso {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (max-width: 480px) {
+  .pasos { display: none; }
+}

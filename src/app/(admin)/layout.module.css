@@ -1,0 +1,26 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--a-bg);
+  font-family: var(--a-font);
+  color: var(--a-text);
+  font-size: 0.875rem;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--a-sidebar-w);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.contenido {
+  flex: 1;
+  padding: var(--a-space-6);
+}
+
+@media (max-width: 768px) {
+  .main { margin-left: 0; }
+}

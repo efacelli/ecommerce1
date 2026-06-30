@@ -1,0 +1,45 @@
+.btnVolver {
+  font-size: 0.8125rem;
+  color: var(--a-text-mid);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.alerta {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--a-space-3);
+  background: var(--a-warning-bg);
+  border: 1px solid var(--a-warning);
+  border-radius: var(--a-radius-md);
+  padding: var(--a-space-4);
+  font-size: 0.875rem;
+  color: var(--a-warning);
+  margin-bottom: var(--a-space-5);
+}
+
+.seccion {
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-md);
+  overflow: hidden;
+  box-shadow: var(--a-shadow-sm);
+}
+
+.seccionHeader {
+  padding: var(--a-space-4) var(--a-space-5);
+  border-bottom: 1px solid var(--a-border);
+  background: var(--a-surface-2);
+}
+
+.titulo {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--a-text);
+}
+
+.subtitulo {
+  font-size: 0.8125rem;
+  color: var(--a-text-muted);
+  margin-top: 2px;
+}

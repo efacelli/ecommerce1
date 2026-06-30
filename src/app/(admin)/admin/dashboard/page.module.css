@@ -1,0 +1,105 @@
+.pagina { display: flex; flex-direction: column; gap: var(--a-space-6); }
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--a-space-4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--a-space-6);
+  align-items: start;
+}
+
+.lateral { display: flex; flex-direction: column; gap: var(--a-space-5); }
+
+.seccion {
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-md);
+  padding: var(--a-space-5);
+  box-shadow: var(--a-shadow-sm);
+}
+
+.seccionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--a-space-4);
+}
+
+.seccionTitulo {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--a-text);
+}
+
+.verTodos {
+  font-size: 0.75rem;
+  color: var(--a-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.verTodos:hover { text-decoration: underline; }
+
+/* Stock bajo */
+.stockLista { display: flex; flex-direction: column; gap: var(--a-space-2); }
+
+.stockItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--a-space-3);
+  padding: var(--a-space-3);
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-sm);
+  text-decoration: none;
+  transition: background var(--a-dur) var(--a-ease);
+}
+.stockItem:hover { background: var(--a-surface-2); }
+
+.stockNombre { font-size: 0.8125rem; font-weight: 500; color: var(--a-text); }
+.stockVariantes { font-size: 0.75rem; color: var(--a-error); margin-top: 2px; }
+.stockEditar { font-size: 0.75rem; color: var(--a-primary); white-space: nowrap; }
+
+/* Estados */
+.estadosLista { display: flex; flex-direction: column; gap: var(--a-space-2); }
+.estadoFila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--a-space-2) 0;
+  border-bottom: 1px solid var(--a-border);
+}
+.estadoFila:last-child { border-bottom: none; }
+.estadoCantidad { font-weight: 600; font-size: 0.875rem; color: var(--a-text); }
+
+/* Top productos */
+.topLista { display: flex; flex-direction: column; gap: var(--a-space-3); }
+.topItem { display: flex; align-items: center; gap: var(--a-space-3); }
+.topNum {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--a-surface-2);
+  color: var(--a-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.topInfo { flex: 1; min-width: 0; }
+.topNombre { font-size: 0.8125rem; font-weight: 500; color: var(--a-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topDato   { font-size: 0.75rem; color: var(--a-text-muted); }
+
+@media (max-width: 1100px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .grid  { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .kpis { grid-template-columns: 1fr 1fr; }
+}

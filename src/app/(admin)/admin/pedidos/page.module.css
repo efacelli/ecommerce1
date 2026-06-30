@@ -1,0 +1,33 @@
+.linkPedido {
+  color: var(--a-primary);
+  font-weight: 600;
+  text-decoration: none;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125rem;
+}
+.linkPedido:hover { text-decoration: underline; }
+
+.clienteNombre { font-weight: 500; font-size: 0.875rem; }
+.clienteEmail  { font-size: 0.75rem; color: var(--a-text-muted); margin-top: 1px; }
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--a-space-4);
+  margin-top: var(--a-space-5);
+}
+
+.pagBtn {
+  padding: 6px 14px;
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-sm);
+  font-size: 0.875rem;
+  color: var(--a-text-mid);
+  text-decoration: none;
+  background: var(--a-surface);
+  transition: background var(--a-dur);
+}
+.pagBtn:hover { background: var(--a-surface-2); }
+
+.pagInfo { font-size: 0.875rem; color: var(--a-text-muted); }

@@ -1,0 +1,76 @@
+/* FiltrosCatalogo.module.css */
+.sidebar {
+  transition: opacity var(--duration-mid) var(--ease);
+}
+
+.cargando { opacity: 0.5; pointer-events: none; }
+
+.grupo {
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+.grupo:last-of-type { border-bottom: none; }
+
+.grupoTitulo {
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin-bottom: var(--space-4);
+}
+
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.opcion {
+  text-align: left;
+  font-size: var(--text-sm);
+  color: var(--color-text-mid);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-fast) var(--ease);
+  position: relative;
+}
+
+.opcion::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 0;
+  background: var(--color-accent);
+  border-radius: 1px;
+  transition: height var(--duration-fast) var(--ease);
+}
+
+.opcion:hover { color: var(--color-text); background: var(--color-bg-alt); }
+
+.opcionActiva {
+  color: var(--color-text);
+  font-weight: 500;
+  background: var(--color-accent-bg);
+}
+.opcionActiva::before { height: 60%; }
+
+.opcionHija {
+  padding-left: var(--space-6);
+  font-size: var(--text-xs);
+}
+
+.btnLimpiar {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color var(--duration-fast) var(--ease);
+}
+.btnLimpiar:hover { color: var(--color-error); }

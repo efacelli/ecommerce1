@@ -1,0 +1,50 @@
+.wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-md);
+  background: var(--a-surface);
+  box-shadow: var(--a-shadow-sm);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.thead { background: var(--a-surface-2); }
+
+.th {
+  text-align: left;
+  padding: var(--a-space-3) var(--a-space-4);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--a-text-muted);
+  border-bottom: 1px solid var(--a-border);
+  white-space: nowrap;
+}
+
+.tbody tr { border-bottom: 1px solid var(--a-border); }
+.tbody tr:last-child { border-bottom: none; }
+
+.tr { transition: background var(--a-dur) var(--a-ease); }
+.trClickable { cursor: pointer; }
+.trClickable:hover { background: var(--a-surface-2); }
+
+.td {
+  padding: var(--a-space-3) var(--a-space-4);
+  color: var(--a-text);
+  vertical-align: middle;
+}
+
+.tdMuted { color: var(--a-text-muted); }
+.tdMono  { font-variant-numeric: tabular-nums; font-family: ui-monospace, monospace; font-size: 0.8125rem; }
+
+.vacio {
+  padding: var(--a-space-10);
+  text-align: center;
+  color: var(--a-text-muted);
+  font-size: 0.875rem;
+}

@@ -1,0 +1,63 @@
+.wrapper {
+  width: 100%;
+  min-height: 52px;
+  position: relative;
+}
+
+/* Skeleton animado mientras carga la preferencia */
+.skeleton {
+  width: 100%;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    var(--color-bg-alt) 50%,
+    var(--color-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* El brick se oculta mientras carga para evitar flash */
+.brickContainer {
+  width: 100%;
+  transition: opacity var(--duration-mid) var(--ease);
+}
+
+.brickOculto {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+/* Error state */
+.error {
+  padding: var(--space-4);
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.errorTitulo {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.errorTexto {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  opacity: 0.85;
+  line-height: 1.5;
+}

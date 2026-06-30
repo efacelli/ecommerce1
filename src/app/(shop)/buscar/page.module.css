@@ -1,0 +1,77 @@
+.pagina {
+  padding-block: var(--space-12) var(--space-20);
+}
+
+.buscadorWrapper {
+  text-align: center;
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-12);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 300;
+  margin-bottom: var(--space-8);
+  letter-spacing: 0.02em;
+}
+
+.resultados { }
+
+.resumenBusqueda {
+  font-size: var(--text-sm);
+  color: var(--color-text-mid);
+  margin-bottom: var(--space-8);
+}
+
+.sinResultados {
+  padding-block: var(--space-16);
+  text-align: center;
+}
+.sinResultadosTitulo {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  margin-bottom: var(--space-3);
+}
+.sinResultadosTexto {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+/* ── Sugerencias ─────────────────────────────────── */
+.sugerencias {
+  padding-top: var(--space-4);
+  text-align: center;
+}
+
+.sugerenciasTitulo {
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-block;
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-sm);
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-mid);
+  transition: all var(--duration-fast) var(--ease);
+}
+.chip:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+  background: var(--color-bg-alt);
+}

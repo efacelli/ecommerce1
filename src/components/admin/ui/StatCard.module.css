@@ -1,0 +1,55 @@
+.card {
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+  border-radius: var(--a-radius-md);
+  padding: var(--a-space-5);
+  box-shadow: var(--a-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-space-2);
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.titulo {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--a-text-muted);
+}
+
+.icono {
+  font-size: 1.25rem;
+  opacity: 0.7;
+}
+
+.valor {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--a-text);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.subtexto {
+  font-size: 0.75rem;
+  color: var(--a-text-muted);
+}
+
+/* Variantes */
+.primary { border-left: 3px solid var(--a-primary); }
+.primary .valor { color: var(--a-primary); }
+
+.success { border-left: 3px solid var(--a-success); }
+.success .valor { color: var(--a-success); }
+
+.warning { border-left: 3px solid var(--a-warning); }
+.warning .valor { color: var(--a-warning); }
+
+.error { border-left: 3px solid var(--a-error); }
+.error .valor { color: var(--a-error); }

@@ -1,0 +1,291 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// CATÁLOGO
+// ─────────────────────────────────────────────
+
+model Categoria {
+  id          Int        @id @default(autoincrement())
+  nombre      String     @unique @db.VarChar(100)
+  slug        String     @unique @db.VarChar(120)
+  descripcion String?    @db.Text
+  imagenUrl   String?    @db.VarChar(500)
+  activa      Boolean    @default(true)
+  orden       Int        @default(0)
+
+  parentId    Int?
+  parent      Categoria?  @relation("CategoriaHija", fields: [parentId], references: [id])
+  hijas       Categoria[] @relation("CategoriaHija")
+
+  productos   Producto[]
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@index([slug])
+  @@index([activa])
+  @@map("categorias")
+}
+
+model Producto {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @db.VarChar(200)
+  slug        String  @unique @db.VarChar(220)
+  descripcion String? @db.Text
+  precio      Decimal @db.Decimal(10, 2)
+  precioAnterior Decimal? @db.Decimal(10, 2) // Para mostrar descuentos
+  imagenes    String[] // Array de URLs
+  activo      Boolean  @default(true)
+  destacado   Boolean  @default(false)
+
+  categoriaId Int
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+
+  variantes   Variante[]
+  etiquetas   EtiquetaProducto[]
+  detallesPedido DetallePedido[]
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@index([slug])
+  @@index([activo])
+  @@index([categoriaId])
+  @@index([destacado])
+  @@map("productos")
+}
+
+model Variante {
+  id     Int     @id @default(autoincrement())
+  sku    String  @unique @db.VarChar(100) // Código de inventario único
+  talle  String  @db.VarChar(10)          // "XS", "S", "M", "L", "XL", "XXL", "38", "40"...
+  color  String? @db.VarChar(50)
+  stock  Int     @default(0)
+  activa Boolean @default(true)
+
+  productoId Int
+  producto   Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+
+  detallesPedido DetallePedido[]
+
+  @@unique([productoId, talle, color])
+  @@index([sku])
+  @@index([productoId])
+  @@map("variantes")
+}
+
+model Etiqueta {
+  id       Int    @id @default(autoincrement())
+  nombre   String @unique @db.VarChar(50) // "nuevo", "sale", "temporada"
+  slug     String @unique @db.VarChar(60)
+  color    String @default("#000000") @db.VarChar(7) // Color hex para UI
+
+  productos EtiquetaProducto[]
+
+  @@map("etiquetas")
+}
+
+// Tabla intermedia explícita Producto ↔ Etiqueta
+model EtiquetaProducto {
+  productoId  Int
+  etiquetaId  Int
+  producto    Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  etiqueta    Etiqueta @relation(fields: [etiquetaId], references: [id], onDelete: Cascade)
+
+  @@id([productoId, etiquetaId])
+  @@map("etiquetas_productos")
+}
+
+// ─────────────────────────────────────────────
+// PEDIDOS
+// ─────────────────────────────────────────────
+
+model Pedido {
+  id          Int          @id @default(autoincrement())
+  numeroPedido String      @unique @db.VarChar(20) // "ORD-2024-00001"
+  estado      EstadoPedido @default(PENDIENTE)
+
+  // Datos del cliente (sin autenticación, guardamos los datos del form)
+  clienteNombre   String  @db.VarChar(150)
+  clienteEmail    String  @db.VarChar(254)
+  clienteTelefono String? @db.VarChar(30)
+  clienteDni      String? @db.VarChar(20)
+
+  // Dirección de entrega
+  envioTipo       TipoEnvio @default(RETIRO_LOCAL)
+  envioCalle      String?   @db.VarChar(200)
+  envioNumero     String?   @db.VarChar(20)
+  envioPiso       String?   @db.VarChar(20)
+  envioLocalidad  String?   @db.VarChar(100)
+  envioProvincia  String?   @db.VarChar(100)
+  envioCodigoPostal String? @db.VarChar(10)
+  envioReferencia String?   @db.Text
+
+  // Totales (se guardan al momento del pedido, no se recalculan)
+  subtotal    Decimal @db.Decimal(10, 2)
+  costoEnvio  Decimal @default(0) @db.Decimal(10, 2)
+  descuento   Decimal @default(0) @db.Decimal(10, 2)
+  total       Decimal @db.Decimal(10, 2)
+
+  // Pago (preparado para Mercado Pago)
+  metodoPago      MetodoPago   @default(EFECTIVO)
+  estadoPago      EstadoPago   @default(PENDIENTE)
+  pagoExternoId   String?      @db.VarChar(200) // ID de MP u otro gateway
+  pagoFecha       DateTime?
+
+  // Relaciones
+  detalles     DetallePedido[]
+  historial    HistorialEstado[]
+  notas        NotaPedido[]
+
+  // Gestión
+  adminId      Int?
+  admin        Administrador? @relation(fields: [adminId], references: [id])
+
+  notas_internas String? @db.Text // Notas privadas del admin
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@index([numeroPedido])
+  @@index([clienteEmail])
+  @@index([estado])
+  @@index([estadoPago])
+  @@index([creadoEn])
+  @@map("pedidos")
+}
+
+model DetallePedido {
+  id         Int     @id @default(autoincrement())
+  cantidad   Int
+  precioUnitario Decimal @db.Decimal(10, 2) // Precio al momento de la compra
+  subtotal   Decimal @db.Decimal(10, 2)
+
+  // Snapshot del producto (para conservar datos si el producto se elimina)
+  productoNombre  String  @db.VarChar(200)
+  varianteTalle   String  @db.VarChar(10)
+  varianteColor   String? @db.VarChar(50)
+  productoImagen  String? @db.VarChar(500)
+
+  pedidoId   Int
+  pedido     Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  productoId Int?
+  producto   Producto? @relation(fields: [productoId], references: [id], onDelete: SetNull)
+
+  varianteId Int?
+  variante   Variante? @relation(fields: [varianteId], references: [id], onDelete: SetNull)
+
+  @@index([pedidoId])
+  @@map("detalles_pedido")
+}
+
+model HistorialEstado {
+  id       Int          @id @default(autoincrement())
+  estado   EstadoPedido
+  nota     String?      @db.Text
+  creadoEn DateTime     @default(now())
+
+  pedidoId    Int
+  pedido      Pedido         @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  adminId     Int?
+  admin       Administrador? @relation(fields: [adminId], references: [id])
+
+  @@index([pedidoId])
+  @@map("historial_estados")
+}
+
+model NotaPedido {
+  id       Int      @id @default(autoincrement())
+  mensaje  String   @db.Text
+  esPublica Boolean @default(false) // false = nota interna, true = visible al cliente
+
+  pedidoId Int
+  pedido   Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  adminId  Int?
+  admin    Administrador? @relation(fields: [adminId], references: [id])
+
+  creadoEn DateTime @default(now())
+
+  @@index([pedidoId])
+  @@map("notas_pedido")
+}
+
+// ─────────────────────────────────────────────
+// ADMINISTRADORES
+// ─────────────────────────────────────────────
+
+model Administrador {
+  id       Int    @id @default(autoincrement())
+  nombre   String @db.VarChar(100)
+  email    String @unique @db.VarChar(254)
+  passwordHash String @db.VarChar(255) // bcrypt hash, nunca texto plano
+  rol      RolAdmin @default(EDITOR)
+  activo   Boolean  @default(true)
+
+  pedidos         Pedido[]
+  historialEstados HistorialEstado[]
+  notas           NotaPedido[]
+
+  ultimoAcceso  DateTime?
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
+
+  @@index([email])
+  @@map("administradores")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum EstadoPedido {
+  PENDIENTE         // Recién creado, sin confirmar
+  CONFIRMADO        // Pago verificado o confirmado por admin
+  EN_PREPARACION    // Armando el pedido
+  LISTO_PARA_ENVIO  // Listo para despachar o retirar
+  EN_CAMINO         // Despachado por correo
+  ENTREGADO         // Entregado al cliente
+  CANCELADO         // Cancelado
+  REEMBOLSADO       // Cancelado con devolución de dinero
+}
+
+enum EstadoPago {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+  REEMBOLSADO
+  EN_PROCESO
+}
+
+enum MetodoPago {
+  EFECTIVO
+  TRANSFERENCIA
+  MERCADO_PAGO    // Preparado para el futuro
+  TARJETA_DEBITO
+  TARJETA_CREDITO
+}
+
+enum TipoEnvio {
+  RETIRO_LOCAL
+  ENVIO_DOMICILIO
+  CORREO_ARGENTINO
+  ANDREANI
+  OTRO
+}
+
+enum RolAdmin {
+  SUPER_ADMIN  // Acceso total, puede crear otros admins
+  ADMIN        // Acceso total excepto gestión de admins
+  EDITOR       // Solo puede gestionar catálogo
+  OPERADOR     // Solo puede gestionar pedidos
+}

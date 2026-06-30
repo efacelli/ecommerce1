@@ -1,0 +1,140 @@
+.pagina {
+  min-height: calc(100vh - var(--header-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: var(--color-bg-alt);
+}
+
+.inner {
+  max-width: 480px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+
+/* ── Ícono de estado ─────────────────────────────── */
+.icono {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  font-size: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.iconoOk       { background: #F0FDF4; color: #16A34A; }
+.iconoPendiente { background: #FFFBEB; color: #D97706; }
+.iconoError    { background: #FEF2F2; color: #DC2626; }
+
+/* ── Textos ──────────────────────────────────────── */
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 300;
+  color: var(--color-text);
+}
+
+.mensaje {
+  font-size: var(--text-base);
+  color: var(--color-text-mid);
+  line-height: 1.7;
+  max-width: 38ch;
+}
+
+/* ── Pedido box ──────────────────────────────────── */
+.pedidoBox {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-8);
+  text-align: center;
+  width: 100%;
+}
+
+.pedidoLabel {
+  font-size: var(--text-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: var(--space-1);
+}
+
+.pedidoNum {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+/* ── Nota pendiente ──────────────────────────────── */
+.nota {
+  background: #FFFBEB;
+  border: 1px solid #D97706;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: #92400E;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* ── Acciones ────────────────────────────────────── */
+.acciones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.btnPrimario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease);
+}
+.btnPrimario:hover { background: var(--color-accent-dark); }
+
+.btnSecundario {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--duration-fast) var(--ease);
+}
+.btnSecundario:hover { color: var(--color-text); }
+
+/* ── Ayuda ───────────────────────────────────────── */
+.ayuda {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.linkWa {
+  color: #25D366;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

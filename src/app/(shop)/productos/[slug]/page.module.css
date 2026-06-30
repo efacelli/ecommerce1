@@ -1,0 +1,204 @@
+.pagina {
+  padding-block: var(--space-8) var(--space-20);
+}
+
+/* ── Breadcrumb ──────────────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.breadLink {
+  color: var(--color-text-muted);
+  transition: color var(--duration-fast) var(--ease);
+}
+.breadLink:hover { color: var(--color-text); }
+.breadCurrent { color: var(--color-text); }
+
+/* ── Layout ──────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-16);
+  align-items: start;
+  margin-bottom: var(--space-20);
+}
+
+/* ── Galería ─────────────────────────────────────── */
+.galeria { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.imagenPrincipal {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+}
+
+.imagen { object-fit: cover; }
+
+.badgeGaleria {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 1;
+}
+
+.miniaturas {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.miniatura {
+  position: relative;
+  width: 72px;
+  aspect-ratio: 3 / 4;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-alt);
+  border: 1.5px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.miniatura:hover { border-color: var(--color-text); }
+
+/* ── Info ────────────────────────────────────────── */
+.info {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-8));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.etiquetas { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.categoria {
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.nombre {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-2xl), 3vw, var(--text-4xl));
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.precios {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.precio {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+}
+
+.precioAnterior {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.descripcion {
+  font-size: var(--text-base);
+  color: var(--color-text-mid);
+  line-height: 1.7;
+  max-width: 55ch;
+}
+
+.separador {
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* ── Detalles acordeón ───────────────────────────── */
+.extras {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.detalle {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detalleTitulo {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding-block: var(--space-4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  user-select: none;
+}
+.detalleTitulo::-webkit-details-marker { display: none; }
+.detalleTitulo::after {
+  content: "+";
+  font-size: var(--text-lg);
+  font-weight: 300;
+  color: var(--color-text-muted);
+  transition: transform var(--duration-fast) var(--ease);
+}
+.detalle[open] .detalleTitulo::after { transform: rotate(45deg); }
+
+.detalleContenido {
+  font-size: var(--text-sm);
+  color: var(--color-text-mid);
+  line-height: 1.7;
+  padding-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.linkDetalle {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Relacionados ────────────────────────────────── */
+.relacionados {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-16);
+}
+
+.relacionadosTitulo {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  margin-bottom: var(--space-10);
+}
+
+.relacionadosGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6) var(--space-5);
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: var(--space-8); }
+  .info { position: static; }
+  .relacionadosGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .nombre { font-size: var(--text-2xl); }
+  .precio { font-size: var(--text-2xl); }
+}

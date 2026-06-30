@@ -1,0 +1,68 @@
+/* ── Admin Design Tokens ─────────────────────────────────────────────────────
+   Sistema de diseño separado del frontend público.
+   El admin usa una paleta más funcional y densa.
+──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Palette admin */
+  --a-bg:           #F4F5F7;
+  --a-surface:      #FFFFFF;
+  --a-surface-2:    #F8F9FA;
+  --a-border:       #E2E4E9;
+  --a-border-dark:  #C8CBD4;
+
+  --a-text:         #111827;
+  --a-text-mid:     #4B5563;
+  --a-text-muted:   #9CA3AF;
+
+  --a-primary:      #1D4ED8;
+  --a-primary-dark: #1E40AF;
+  --a-primary-bg:   #EFF6FF;
+
+  --a-success:      #16A34A;
+  --a-success-bg:   #F0FDF4;
+  --a-warning:      #D97706;
+  --a-warning-bg:   #FFFBEB;
+  --a-error:        #DC2626;
+  --a-error-bg:     #FEF2F2;
+  --a-info:         #0891B2;
+  --a-info-bg:      #ECFEFF;
+
+  /* Sidebar */
+  --a-sidebar-w:    240px;
+  --a-sidebar-bg:   #111827;
+  --a-sidebar-text: rgba(255,255,255,0.7);
+  --a-sidebar-active: #FFFFFF;
+  --a-sidebar-active-bg: rgba(255,255,255,0.1);
+  --a-sidebar-hover-bg: rgba(255,255,255,0.06);
+
+  /* Header */
+  --a-header-h:     56px;
+
+  /* Typography */
+  --a-font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Spacing */
+  --a-space-1: 0.25rem;
+  --a-space-2: 0.5rem;
+  --a-space-3: 0.75rem;
+  --a-space-4: 1rem;
+  --a-space-5: 1.25rem;
+  --a-space-6: 1.5rem;
+  --a-space-8: 2rem;
+  --a-space-10: 2.5rem;
+  --a-space-12: 3rem;
+
+  /* Radii */
+  --a-radius-sm: 6px;
+  --a-radius-md: 10px;
+  --a-radius-lg: 14px;
+
+  /* Shadows */
+  --a-shadow-sm: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --a-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+
+  /* Transition */
+  --a-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --a-dur: 150ms;
+}

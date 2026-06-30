@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCarrito } from "@/context/CarritoContext";
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { formatearPrecio } from "@/lib/utils";
 import styles from "./page.module.css";
 
-export default function CarritoPage() {
+function CarritoContenido() {
   const { items, subtotal, totalItems, quitarItem, cambiarCantidad, vaciarCarrito } =
     useCarrito();
 
@@ -27,7 +28,7 @@ export default function CarritoPage() {
     );
   }
 
-  const costoEnvio = 0; // Se calcula en el checkout
+  const costoEnvio = 0;
   const total = subtotal + costoEnvio;
 
   return (
@@ -44,9 +45,7 @@ export default function CarritoPage() {
         </div>
 
         <div className={styles.layout}>
-          {/* ── Lista de ítems ──────────────────────── */}
           <div className={styles.lista}>
-            {/* Encabezado tabla */}
             <div className={styles.tablaHeader}>
               <span>Producto</span>
               <span>Cantidad</span>
@@ -55,7 +54,6 @@ export default function CarritoPage() {
 
             {items.map((item) => (
               <div key={item.varianteId} className={styles.item}>
-                {/* Imagen */}
                 <div className={styles.itemImagen}>
                   <Image
                     src={item.imagen || "/images/placeholder.png"}
@@ -63,15 +61,12 @@ export default function CarritoPage() {
                     fill
                     sizes="100px"
                     className={styles.imagen}
+                    unoptimized
                   />
                 </div>
 
-                {/* Info */}
                 <div className={styles.itemInfo}>
-                  <Link
-                    href={`/productos/${item.slug}`}
-                    className={styles.itemNombre}
-                  >
+                  <Link href={`/productos/${item.slug}`} className={styles.itemNombre}>
                     {item.nombre}
                   </Link>
                   <p className={styles.itemVariante}>
@@ -89,13 +84,10 @@ export default function CarritoPage() {
                   </button>
                 </div>
 
-                {/* Control cantidad */}
                 <div className={styles.cantidadWrapper}>
                   <div className={styles.cantidad}>
                     <button
-                      onClick={() =>
-                        cambiarCantidad(item.varianteId, item.cantidad - 1)
-                      }
+                      onClick={() => cambiarCantidad(item.varianteId, item.cantidad - 1)}
                       className={styles.cantidadBtn}
                       aria-label="Reducir cantidad"
                     >
@@ -103,9 +95,7 @@ export default function CarritoPage() {
                     </button>
                     <span className={styles.cantidadValor}>{item.cantidad}</span>
                     <button
-                      onClick={() =>
-                        cambiarCantidad(item.varianteId, item.cantidad + 1)
-                      }
+                      onClick={() => cambiarCantidad(item.varianteId, item.cantidad + 1)}
                       className={styles.cantidadBtn}
                       aria-label="Aumentar cantidad"
                     >
@@ -114,7 +104,6 @@ export default function CarritoPage() {
                   </div>
                 </div>
 
-                {/* Subtotal del ítem */}
                 <p className={styles.itemSubtotal}>
                   {formatearPrecio(item.precio * item.cantidad)}
                 </p>
@@ -122,7 +111,6 @@ export default function CarritoPage() {
             ))}
           </div>
 
-          {/* ── Resumen ─────────────────────────────── */}
           <aside className={styles.resumen}>
             <h2 className={styles.resumenTitulo}>Resumen</h2>
 
@@ -159,5 +147,13 @@ export default function CarritoPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CarritoPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "60vh" }} />}>
+      <CarritoContenido />
+    </Suspense>
   );
 }

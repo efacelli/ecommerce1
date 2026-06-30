@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useRef, useEffect, useTransition } from "react";
+import { useState, useRef, useEffect, useTransition, Suspense } from "react";
 import styles from "./SearchBar.module.css";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   placeholder?: string;
 };
 
-export function SearchBar({
+function SearchBarInterno({
   compacta = false,
   placeholder = "Buscar prendas…",
 }: Props) {
@@ -20,12 +20,10 @@ export function SearchBar({
   const [, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sincronizar con el URL cuando cambia la ruta
   useEffect(() => {
     setValor(searchParams.get("q") ?? "");
   }, [searchParams]);
 
-  // Foco automático al abrir (modo compacto)
   useEffect(() => {
     if (abierta && compacta) {
       inputRef.current?.focus();
@@ -49,16 +47,11 @@ export function SearchBar({
     }
   }
 
-  // ── Modo compacto (header): icono → expande ──────────────────
   if (compacta) {
     return (
       <div className={styles.compacta}>
         {abierta ? (
-          <form
-            onSubmit={handleSubmit}
-            className={styles.formCompacta}
-            role="search"
-          >
+          <form onSubmit={handleSubmit} className={styles.formCompacta} role="search">
             <input
               ref={inputRef}
               type="search"
@@ -82,11 +75,7 @@ export function SearchBar({
             </button>
           </form>
         ) : (
-          <button
-            onClick={() => setAbierta(true)}
-            className={styles.btnIcono}
-            aria-label="Abrir búsqueda"
-          >
+          <button onClick={() => setAbierta(true)} className={styles.btnIcono} aria-label="Abrir búsqueda">
             <IconoBuscar />
           </button>
         )}
@@ -94,13 +83,10 @@ export function SearchBar({
     );
   }
 
-  // ── Modo completo (página de búsqueda) ───────────────────────
   return (
     <form onSubmit={handleSubmit} className={styles.form} role="search">
       <div className={styles.inputWrapper}>
-        <span className={styles.iconoIzq} aria-hidden="true">
-          <IconoBuscar />
-        </span>
+        <span className={styles.iconoIzq} aria-hidden="true"><IconoBuscar /></span>
         <input
           ref={inputRef}
           type="search"
@@ -113,20 +99,25 @@ export function SearchBar({
           autoFocus
         />
         {valor && (
-          <button
-            type="button"
-            onClick={() => setValor("")}
-            className={styles.btnLimpiar}
-            aria-label="Limpiar búsqueda"
-          >
+          <button type="button" onClick={() => setValor("")} className={styles.btnLimpiar} aria-label="Limpiar búsqueda">
             <IconoCerrar />
           </button>
         )}
       </div>
-      <button type="submit" className={styles.btnBuscar}>
-        Buscar
-      </button>
+      <button type="submit" className={styles.btnBuscar}>Buscar</button>
     </form>
+  );
+}
+
+// El componente exportado se envuelve a sí mismo en Suspense.
+// Así, cualquier página que use <SearchBar /> (directa o indirectamente
+// vía el Header del layout) queda protegida automáticamente sin tener
+// que recordar envolverlo manualmente en cada lugar donde se use.
+export function SearchBar(props: Props) {
+  return (
+    <Suspense fallback={<div className={props.compacta ? styles.btnIcono : styles.input} />}>
+      <SearchBarInterno {...props} />
+    </Suspense>
   );
 }
 

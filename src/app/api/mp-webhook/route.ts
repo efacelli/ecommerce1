@@ -1,96 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validarFirmaWebhookSync } from "@/lib/mp.webhook";
-import { procesarPagoWebhook } from "@/services/mp.service";
+import { z } from "zod";
 
-const WEBHOOK_SECRET = process.env.MP_WEBHOOK_SECRET ?? "";
+// Fuerza que esta ruta sea siempre dinámica — nunca se evalúa en build time.
+// Sin esto, Next.js intenta pre-renderizar la ruta durante "next build",
+// lo que ejecuta el código del módulo (incluido el cliente de Mercado Pago)
+// antes de que las variables de entorno de runtime estén disponibles.
+export const dynamic = "force-dynamic";
 
-/**
- * Webhook de Mercado Pago — POST /api/mp-webhook
- *
- * MP envía notificaciones cuando un pago es creado o actualizado.
- * Siempre debemos responder 200 rápido y procesar de forma asíncrona.
- *
- * Estructura del request:
- * - Header x-signature: ts=<timestamp>,v1=<hmac_sha256>
- * - Header x-request-id: UUID único por notificación
- * - Query param data.id: ID del pago en MP
- * - Body: { action, api_version, data: { id }, type, ... }
- */
+const schemaBody = z.object({
+  pedidoId: z.number().int().positive(),
+});
+
 export async function POST(req: NextRequest) {
-  // 1. Extraer headers y query params necesarios para la validación
-  const xSignature  = req.headers.get("x-signature") ?? "";
-  const xRequestId  = req.headers.get("x-request-id");
-  const dataId      = req.nextUrl.searchParams.get("data.id");
-  const tipo        = req.nextUrl.searchParams.get("type");
+  try {
+    // Imports dinámicos: se cargan recién cuando la request llega,
+    // no durante el build de Next.js
+    const { crearPreferenciaPago } = await import("@/services/mp.service");
+    const { prisma } = await import("@/lib/prisma");
 
-  // 2. Validar firma HMAC — rechazar si falla
-  if (!WEBHOOK_SECRET) {
-    console.error("[MP Webhook] MP_WEBHOOK_SECRET no configurado");
-    return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
-  }
+    const body = await req.json();
+    const { pedidoId } = schemaBody.parse(body);
 
-  if (xSignature) {
-    const firmaValida = validarFirmaWebhookSync({
-      xSignature,
-      xRequestId,
-      dataId,
-      secret: WEBHOOK_SECRET,
+    const pedido = await prisma.pedido.findUnique({
+      where: { id: pedidoId },
+      include: { detalles: true },
     });
 
-    if (!firmaValida) {
-      console.warn("[MP Webhook] Firma inválida — posible request fraudulenta");
-      return NextResponse.json({ error: "Firma inválida" }, { status: 401 });
+    if (!pedido) {
+      return NextResponse.json(
+        { error: "Pedido no encontrado" },
+        { status: 404 }
+      );
     }
-  } else {
-    // En testing/sandbox MP puede no enviar la firma
-    // En producción esto nunca debería ocurrir
-    if (process.env.NODE_ENV === "production") {
-      console.error("[MP Webhook] x-signature ausente en producción");
-      return NextResponse.json({ error: "Firma requerida" }, { status: 401 });
+
+    if (pedido.estado !== "PENDIENTE") {
+      return NextResponse.json(
+        { error: "El pedido ya fue procesado" },
+        { status: 409 }
+      );
     }
-    console.warn("[MP Webhook] x-signature ausente — aceptando en desarrollo");
+
+    const resultado = await crearPreferenciaPago({
+      pedidoId:      pedido.id,
+      numeroPedido:  pedido.numeroPedido,
+      clienteEmail:  pedido.clienteEmail,
+      clienteNombre: pedido.clienteNombre,
+      items: pedido.detalles.map((d) => ({
+        nombre:         d.productoNombre,
+        cantidad:       d.cantidad,
+        precioUnitario: Number(d.precioUnitario),
+        imagen:         d.productoImagen ?? undefined,
+      })),
+      costoEnvio: Number(pedido.costoEnvio),
+    });
+
+    return NextResponse.json(resultado);
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Datos inválidos", detalles: err.errors },
+        { status: 400 }
+      );
+    }
+    console.error("[/api/mp-preference]", err);
+    return NextResponse.json(
+      { error: "Error al crear la preferencia de pago" },
+      { status: 500 }
+    );
   }
-
-  // 3. Parsear el body
-  let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Body inválido" }, { status: 400 });
-  }
-
-  console.log("[MP Webhook] Notificación recibida:", {
-    tipo,
-    dataId,
-    action:  body.action,
-    liveMode: body.live_mode,
-  });
-
-  // 4. Solo procesar eventos de tipo "payment"
-  if (tipo !== "payment" && body.type !== "payment") {
-    // Responder 200 para que MP no reintente notificaciones que no manejamos
-    return NextResponse.json({ ok: true, omitido: true });
-  }
-
-  // 5. Obtener el payment ID (viene en query param o en el body)
-  const paymentId = dataId ?? String((body.data as Record<string, unknown>)?.id ?? "");
-
-  if (!paymentId) {
-    console.error("[MP Webhook] paymentId no encontrado");
-    return NextResponse.json({ error: "paymentId requerido" }, { status: 400 });
-  }
-
-  // 6. Procesar el pago de forma asíncrona
-  // Respondemos 200 ANTES de procesar para evitar timeouts de MP
-  // (MP espera respuesta en < 22 segundos o reintenta hasta 3 veces)
-  procesarPagoWebhook(paymentId).catch((err) => {
-    console.error("[MP Webhook] Error procesando pago:", err);
-  });
-
-  return NextResponse.json({ ok: true, paymentId });
-}
-
-// MP también puede enviar GET para verificar que el endpoint existe
-export async function GET() {
-  return NextResponse.json({ status: "webhook activo" });
 }

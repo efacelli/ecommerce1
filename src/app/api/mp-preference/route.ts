@@ -1,19 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { crearPreferenciaPago } from "@/services/mp.service";
-import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
-// Schema de validación de la request
+// Fuerza que esta ruta sea siempre dinámica — nunca se evalúa en build time.
+// Sin esto, Next.js intenta pre-renderizar la ruta durante "next build",
+// lo que ejecuta el código del módulo (incluido el cliente de Mercado Pago)
+// antes de que las variables de entorno de runtime estén disponibles.
+export const dynamic = "force-dynamic";
+
 const schemaBody = z.object({
   pedidoId: z.number().int().positive(),
 });
 
 export async function POST(req: NextRequest) {
   try {
+    // Imports dinámicos: se cargan recién cuando la request llega,
+    // no durante el build de Next.js
+    const { crearPreferenciaPago } = await import("@/services/mp.service");
+    const { prisma } = await import("@/lib/prisma");
+
     const body = await req.json();
     const { pedidoId } = schemaBody.parse(body);
 
-    // Cargar el pedido con sus detalles desde la BD
     const pedido = await prisma.pedido.findUnique({
       where: { id: pedidoId },
       include: { detalles: true },
@@ -26,7 +33,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Solo crear preferencia para pedidos pendientes
     if (pedido.estado !== "PENDIENTE") {
       return NextResponse.json(
         { error: "El pedido ya fue procesado" },

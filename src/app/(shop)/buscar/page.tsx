@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getProductos } from "@/services/producto.service";
 import { SearchBar } from "@/components/shop/SearchBar";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { Pagination } from "@/components/ui/Pagination";
-import { Suspense } from "react";
 import styles from "./page.module.css";
+
+// Esta página depende de searchParams (query de búsqueda) en cada request,
+// por lo que nunca debe pre-renderizarse de forma estática en el build.
+export const dynamic = "force-dynamic";
 
 type Props = {
   searchParams: Promise<{ q?: string; pagina?: string }>;
@@ -32,7 +36,7 @@ export default async function BuscarPage({ searchParams }: Props) {
     <div className={styles.pagina}>
       <div className="container">
 
-        {/* ── Buscador ─────────────────────────────── */}
+        {/* Buscador */}
         <div className={styles.buscadorWrapper}>
           <h1 className={styles.titulo}>Buscar</h1>
           <Suspense>
@@ -40,7 +44,7 @@ export default async function BuscarPage({ searchParams }: Props) {
           </Suspense>
         </div>
 
-        {/* ── Resultados ───────────────────────────── */}
+        {/* Resultados */}
         {query && resultado && (
           <div className={styles.resultados}>
             <p className={styles.resumenBusqueda}>
@@ -76,7 +80,7 @@ export default async function BuscarPage({ searchParams }: Props) {
           </div>
         )}
 
-        {/* ── Estado inicial (sin query) ───────────── */}
+        {/* Estado inicial (sin query) */}
         {!query && (
           <div className={styles.sugerencias}>
             <p className={styles.sugerenciasTitulo}>Búsquedas frecuentes</p>

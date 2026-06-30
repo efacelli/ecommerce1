@@ -1,9 +1,20 @@
 import "server-only";
 import { mpPreference, mpPayment } from "@/lib/mp.client";
 import { prisma } from "@/lib/prisma";
-import type { PreferenceItem } from "mercadopago/dist/clients/preference/commonTypes";
 
 const BASE_URL = process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000";
+
+// Tipo definido localmente — evita depender de rutas internas del SDK
+// que pueden cambiar entre versiones de "mercadopago"
+type MPPreferenceItem = {
+  id: string;
+  title: string;
+  quantity: number;
+  unit_price: number;
+  currency_id: string;
+  picture_url?: string;
+  category_id?: string;
+};
 
 // ─── Crear preferencia de pago ────────────────────────────────────────────────
 
@@ -31,12 +42,11 @@ export async function crearPreferenciaPago(input: CrearPreferenciaInput) {
     costoEnvio,
   } = input;
 
-  // Armar los items de MP (un item por producto + envío si aplica)
-  const mpItems: PreferenceItem[] = items.map((item) => ({
+  const mpItems: MPPreferenceItem[] = items.map((item) => ({
     id:           `item-${pedidoId}`,
     title:        item.nombre,
     quantity:     item.cantidad,
-    unit_price:   Math.round(item.precioUnitario * 100) / 100, // 2 decimales exactos
+    unit_price:   Math.round(item.precioUnitario * 100) / 100,
     currency_id:  "ARS",
     picture_url:  item.imagen,
     category_id:  "fashion",
@@ -54,9 +64,7 @@ export async function crearPreferenciaPago(input: CrearPreferenciaInput) {
 
   const preferencia = await mpPreference.create({
     body: {
-      // Identificador de tu sistema para reconciliar con el webhook
       external_reference: numeroPedido,
-
       items: mpItems,
 
       payer: {
@@ -64,40 +72,27 @@ export async function crearPreferenciaPago(input: CrearPreferenciaInput) {
         name:  clienteNombre,
       },
 
-      // URLs de retorno tras el pago
       back_urls: {
         success: `${BASE_URL}/checkout/mp-retorno?estado=aprobado&pedido=${numeroPedido}`,
         failure: `${BASE_URL}/checkout/mp-retorno?estado=fallido&pedido=${numeroPedido}`,
         pending: `${BASE_URL}/checkout/mp-retorno?estado=pendiente&pedido=${numeroPedido}`,
       },
 
-      // Retorno automático solo cuando el pago es aprobado
       auto_return: "approved",
 
-      // URL donde MP envía las notificaciones (reemplaza la configurada en el panel
-      // si se define aquí — útil para multi-tenant o testing con ngrok)
-      // notification_url: `${BASE_URL}/api/mp-webhook`,
-
-      // Vencimiento: el link de pago expira en 24 horas
       expiration_date_to: new Date(
         Date.now() + 24 * 60 * 60 * 1000
       ).toISOString(),
 
-      // Metadatos adicionales para debugging
       metadata: {
-        pedido_id:    pedidoId,
+        pedido_id:     pedidoId,
         numero_pedido: numeroPedido,
       },
 
-      // Configuración para Argentina
       payment_methods: {
-        // Excluir métodos que no querés aceptar (opcional)
-        // excluded_payment_methods: [{ id: "amex" }],
-        // excluded_payment_types:   [{ id: "ticket" }],
-        installments: 12, // Cuotas máximas
+        installments: 12,
       },
 
-      // Modo statement para que el cliente vea el nombre de tu negocio
       statement_descriptor: "LA TIENDA ROPA",
     },
   });
@@ -106,7 +101,6 @@ export async function crearPreferenciaPago(input: CrearPreferenciaInput) {
     throw new Error("Mercado Pago no devolvió un ID de preferencia");
   }
 
-  // Guardar el preference ID en el pedido para trazabilidad
   await prisma.pedido.update({
     where: { id: pedidoId },
     data: {
@@ -117,8 +111,8 @@ export async function crearPreferenciaPago(input: CrearPreferenciaInput) {
 
   return {
     preferenceId: preferencia.id,
-    initPoint:    preferencia.init_point,         // URL de producción
-    sandboxUrl:   preferencia.sandbox_init_point,  // URL de testing
+    initPoint:    preferencia.init_point,
+    sandboxUrl:   preferencia.sandbox_init_point,
   };
 }
 
@@ -139,29 +133,24 @@ type EstadoPagoMP =
   | "refunded"
   | "charged_back";
 
-/**
- * Mapeo de estados de MP a los estados internos del sistema.
- * Documentación: https://www.mercadopago.com.ar/developers/es/docs/checkout-pro/payment-management/payment-statuses
- */
 const ESTADO_PAGO_MAP: Record<
   EstadoPagoMP,
   { estadoPago: string; estadoPedido: string | null }
 > = {
-  approved:     { estadoPago: "APROBADO",    estadoPedido: "CONFIRMADO"       },
-  pending:      { estadoPago: "PENDIENTE",   estadoPedido: null                },
-  in_process:   { estadoPago: "EN_PROCESO",  estadoPedido: null                },
-  rejected:     { estadoPago: "RECHAZADO",   estadoPedido: "CANCELADO"        },
-  cancelled:    { estadoPago: "RECHAZADO",   estadoPedido: "CANCELADO"        },
-  refunded:     { estadoPago: "REEMBOLSADO", estadoPedido: "REEMBOLSADO"      },
-  charged_back: { estadoPago: "REEMBOLSADO", estadoPedido: "REEMBOLSADO"      },
+  approved:     { estadoPago: "APROBADO",    estadoPedido: "CONFIRMADO"  },
+  pending:      { estadoPago: "PENDIENTE",   estadoPedido: null           },
+  in_process:   { estadoPago: "EN_PROCESO",  estadoPedido: null           },
+  rejected:     { estadoPago: "RECHAZADO",   estadoPedido: "CANCELADO"   },
+  cancelled:    { estadoPago: "RECHAZADO",   estadoPedido: "CANCELADO"   },
+  refunded:     { estadoPago: "REEMBOLSADO", estadoPedido: "REEMBOLSADO" },
+  charged_back: { estadoPago: "REEMBOLSADO", estadoPedido: "REEMBOLSADO" },
 };
 
 export async function procesarPagoWebhook(paymentId: string) {
-  // 1. Obtener datos actualizados del pago desde la API de MP
   const pago = await getPagoMP(paymentId);
 
-  const estadoMP   = pago.status as EstadoPagoMP;
-  const externalRef = pago.external_reference; // = numeroPedido
+  const estadoMP    = pago.status as EstadoPagoMP;
+  const externalRef = pago.external_reference;
 
   if (!externalRef) {
     console.warn(`[MP Webhook] Pago ${paymentId} sin external_reference`);
@@ -174,14 +163,9 @@ export async function procesarPagoWebhook(paymentId: string) {
     return { omitido: true };
   }
 
-  // 2. Buscar el pedido por numeroPedido (= external_reference)
   const pedido = await prisma.pedido.findUnique({
     where: { numeroPedido: externalRef },
-    select: {
-      id:         true,
-      estadoPago: true,
-      estado:     true,
-    },
+    select: { id: true, estadoPago: true, estado: true },
   });
 
   if (!pedido) {
@@ -189,20 +173,17 @@ export async function procesarPagoWebhook(paymentId: string) {
     return { error: "pedido_no_encontrado" };
   }
 
-  // 3. Actualizar en una transacción atómica
   await prisma.$transaction(async (tx) => {
     await tx.pedido.update({
       where: { id: pedido.id },
       data: {
-        estadoPago:   mapeo.estadoPago as any,
+        estadoPago:    mapeo.estadoPago as any,
         pagoExternoId: String(pago.id),
-        pagoFecha:    estadoMP === "approved" ? new Date() : undefined,
-        // Solo actualizar el estado del pedido si hay un cambio mapeado
+        pagoFecha:     estadoMP === "approved" ? new Date() : undefined,
         ...(mapeo.estadoPedido ? { estado: mapeo.estadoPedido as any } : {}),
       },
     });
 
-    // Registrar en el historial si el estado del pedido cambió
     if (mapeo.estadoPedido && mapeo.estadoPedido !== pedido.estado) {
       await tx.historialEstado.create({
         data: {

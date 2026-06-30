@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getCategoriaPorSlug } from "@/services/categoria.service";
 import { getProductos } from "@/services/producto.service";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { Pagination } from "@/components/ui/Pagination";
-import Link from "next/link";
 import type { FiltrosCatalogo } from "@/types";
 import styles from "./page.module.css";
+
+// Esta página depende de la categoría (params) y de filtros (searchParams)
+// en cada request — nunca debe pre-renderizarse de forma estática en el build.
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -38,11 +42,27 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
 
   const resultado = await getProductos(filtros);
 
+  // Si la categoría no tiene productos directos pero tiene subcategorías,
+  // buscar productos de todas las subcategorías
+  let productosFinales = resultado;
+  if (resultado.total === 0 && categoria.hijas && categoria.hijas.length > 0) {
+    const promesas = categoria.hijas.map((hija) =>
+      getProductos({ ...filtros, categoriaSlug: hija.slug })
+    );
+    const resultados = await Promise.all(promesas);
+    const todosItems = resultados.flatMap((r) => r.items);
+    productosFinales = {
+      items: todosItems,
+      total: todosItems.length,
+      pagina: 1,
+      totalPaginas: 1,
+      porPagina: todosItems.length,
+    };
+  }
+
   return (
     <div className={styles.pagina}>
       <div className="container">
-
-        {/* ── Encabezado de categoría ──────────────── */}
         <div className={styles.header}>
           <nav className={styles.breadcrumb} aria-label="Ruta de navegación">
             <Link href="/" className={styles.breadLink}>Inicio</Link>
@@ -56,11 +76,10 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
             <p className={styles.descripcion}>{categoria.descripcion}</p>
           )}
           <p className={styles.conteo}>
-            {resultado.total} {resultado.total === 1 ? "prenda" : "prendas"}
+            {productosFinales.total} {productosFinales.total === 1 ? "prenda" : "prendas"}
           </p>
         </div>
 
-        {/* ── Subcategorías ───────────────────────── */}
         {categoria.hijas && categoria.hijas.length > 0 && (
           <div className={styles.subcategorias}>
             {categoria.hijas.map((hija) => (
@@ -75,11 +94,10 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
           </div>
         )}
 
-        {/* ── Productos ───────────────────────────── */}
-        <ProductGrid productos={resultado.items} />
+        <ProductGrid productos={productosFinales.items} />
         <Pagination
-          paginaActual={resultado.pagina}
-          totalPaginas={resultado.totalPaginas}
+          paginaActual={productosFinales.pagina}
+          totalPaginas={productosFinales.totalPaginas}
         />
       </div>
     </div>

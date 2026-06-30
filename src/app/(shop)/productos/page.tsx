@@ -7,6 +7,9 @@ import { FiltrosCatalogo as FiltrosCatalogoUI } from "@/components/shop/FiltrosC
 import type { FiltrosCatalogo } from "@/types";
 import styles from "./page.module.css";
 
+// Depende de searchParams en cada request — nunca pre-renderizar de forma estática.
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{
     categoriaSlug?: string;
@@ -44,7 +47,6 @@ export default async function ProductosPage({ searchParams }: Props) {
     <div className={styles.pagina}>
       <div className="container">
 
-        {/* ── Encabezado ──────────────────────────── */}
         <div className={styles.encabezado}>
           <div>
             <h1 className={styles.titulo}>{titulo}</h1>
@@ -56,15 +58,11 @@ export default async function ProductosPage({ searchParams }: Props) {
           </div>
         </div>
 
-        {/* ── Layout con sidebar ───────────────────── */}
         <div className={styles.layout}>
-
-          {/* Sidebar de filtros */}
           <aside className={styles.sidebar}>
             <FiltrosCatalogoUI categorias={categorias} filtrosActivos={filtros} />
           </aside>
 
-          {/* Grilla de productos */}
           <div className={styles.contenido}>
             <ProductGrid productos={resultado.items} />
             <Pagination

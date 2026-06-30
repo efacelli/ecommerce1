@@ -8,6 +8,9 @@ import { EliminarProductoButton } from "@/components/admin/EliminarProductoButto
 import { editarProductoAction } from "@/actions/producto.admin.actions";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -25,7 +28,6 @@ export default async function EditarProductoPage({ params }: Props) {
 
   if (!producto) notFound();
 
-  // Bindear el id al action
   const actionConId = editarProductoAction.bind(null, producto.id);
 
   return (
@@ -38,20 +40,14 @@ export default async function EditarProductoPage({ params }: Props) {
             <Link
               href={`/productos/${producto.slug}`}
               target="_blank"
-              style={{
-                fontSize: "0.8125rem",
-                color: "var(--a-primary)",
-                textDecoration: "underline",
-              }}
+              style={{ fontSize: "0.8125rem", color: "var(--a-primary)", textDecoration: "underline" }}
             >
               Ver en tienda ↗
             </Link>
             <Link href={`/admin/productos/${producto.id}/stock`}>
               <span style={{
-                fontSize: "0.8125rem",
-                padding: "5px 12px",
-                border: "1px solid var(--a-border)",
-                borderRadius: "var(--a-radius-sm)",
+                fontSize: "0.8125rem", padding: "5px 12px",
+                border: "1px solid var(--a-border)", borderRadius: "var(--a-radius-sm)",
                 color: "var(--a-text)",
               }}>
                 Gestionar stock
@@ -61,11 +57,7 @@ export default async function EditarProductoPage({ params }: Props) {
           </>
         }
       />
-      <ProductoForm
-        categorias={categorias}
-        producto={producto}
-        action={actionConId}
-      />
+      <ProductoForm categorias={categorias} producto={producto} action={actionConId} />
     </div>
   );
 }

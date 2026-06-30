@@ -37,6 +37,17 @@ export type AdminPedido = {
   clienteNombre: string;
   clienteEmail: string;
   clienteTelefono: string | null;
+  clienteDni: string | null;
+
+  // Campos de dirección de envío
+  envioCalle: string | null;
+  envioNumero: string | null;
+  envioPiso: string | null;
+  envioLocalidad: string | null;
+  envioProvincia: string | null;
+  envioCodigoPostal: string | null;
+  envioReferencia: string | null;
+
   subtotal: number;
   costoEnvio: number;
   descuento: number;
@@ -150,7 +161,7 @@ export type FiltrosProductosAdmin = {
 // ─── Formulario producto ──────────────────────────────────────────────────────
 
 export type VarianteFormData = {
-  id?: number;       // undefined = nueva variante
+  id?: number;
   sku: string;
   talle: string;
   color: string;
